@@ -20,6 +20,7 @@ model = joblib.load('model.joblib')
 # tfnet=TFNet(options)    #READ ABOUT TFNET
 
 # Default values of signal times
+Detection = True
 defaultRed = 150
 defaultYellow = 5
 defaultGreen = 5
@@ -311,7 +312,11 @@ def setTime():
     # greenTime = math.ceil(((noOfCars*carTime) + (noOfRickshaws*rickshawTime) + (noOfBuses*busTime) + (noOfTrucks*truckTime)+ (noOfBikes*bikeTime))/(noOfLanes+1))
     # greenTime = math.ceil((noOfVehicles)/noOfLanes) 
     input_data = np.array([[noOfCars, noOfBuses, noOfTrucks, noOfRickshaws, noOfBikes, noOfVehicles]])
-    greenTime = np.floor(model.predict(input_data))
+
+    if Detection:
+        greenTime = np.floor(model.predict(input_data))
+    else:
+        greenTime = 30
     print('No. of vehicles: ',noOfVehicles)
     print('Green Time: ',greenTime)
     if(greenTime<defaultMinimum):
@@ -357,16 +362,15 @@ def repeat():
 
 # Print the signal timers on cmd
 def printStatus():  
-    pass                                                                                         
-	# for i in range(0, noOfSignals):
-	# 	if(i==currentGreen):
-	# 		if(currentYellow==0):
-	# 			print(" GREEN TS",i+1,"-> r:",signals[i].red," y:",signals[i].yellow," g:",signals[i].green)
-	# 		else:
-	# 			print("YELLOW TS",i+1,"-> r:",signals[i].red," y:",signals[i].yellow," g:",signals[i].green)
-	# 	else:
-	# 		print("   RED TS",i+1,"-> r:",signals[i].red," y:",signals[i].yellow," g:",signals[i].green)
-	# print()
+	for i in range(0, noOfSignals):
+		if(i==currentGreen):
+			if(currentYellow==0):
+				print(" GREEN TS",i+1,"-> r:",signals[i].red," y:",signals[i].yellow," g:",signals[i].green)
+			else:
+				print("YELLOW TS",i+1,"-> r:",signals[i].red," y:",signals[i].yellow," g:",signals[i].green)
+		else:
+			print("   RED TS",i+1,"-> r:",signals[i].red," y:",signals[i].yellow," g:",signals[i].green)
+	print()
 
 # Update values of the signal timers after every second
 def updateValues():
